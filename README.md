@@ -1,7 +1,5 @@
 # Framework de Automatización — kata-semi-senior-qa
 
-Resumen profesional y guía rápida del framework de automatización diseñado para pruebas API y UI usando Serenity Screenplay, Rest Assured y Gherkin.
-
 **Arquitectura**
 
 - Estructura modular basada en Screenplay (Actors, Abilities, Tasks, Questions, Interactions)
