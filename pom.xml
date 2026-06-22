@@ -1,0 +1,283 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.example</groupId>
+	<artifactId>kata-semi-senior-qa</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<!-- ========================= -->
+	<!-- PROPERTIES CENTRALIZADAS -->
+	<!-- ========================= -->
+	<properties>
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Framework versions -->
+		<serenity.version>5.3.10</serenity.version>
+		<selenium.version>4.41.0</selenium.version>
+		<restassured.version>5.3.0</restassured.version>
+		<cucumber.version>7.14.0</cucumber.version>
+		<serenity.maven.plugin.version>${serenity.version}</serenity.maven.plugin.version>
+
+		<!-- Utilities -->
+		<jackson.version>2.15.2</jackson.version>
+		<lombok.version>1.18.32</lombok.version>
+		<slf4j.version>2.0.11</slf4j.version>
+		<logback.version>1.4.11</logback.version>
+		<assertj.version>3.24.2</assertj.version>
+		<junit.version>4.13.2</junit.version>
+
+		<!-- Maven plugins -->
+		<maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+		<maven.failsafe.plugin.version>3.1.2</maven.failsafe.plugin.version>
+	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>net.serenity-bdd</groupId>
+				<artifactId>serenity-bom</artifactId>
+				<version>${serenity.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- ========================= -->
+	<!-- DEPENDENCIAS -->
+	<!-- ========================= -->
+	<dependencies>
+
+		<!-- ================= SERENITY / SCREENPLAY ================= -->
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-core</artifactId>
+			<version>${serenity.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-screenplay</artifactId>
+			<version>${serenity.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-screenplay-webdriver</artifactId>
+			<version>${serenity.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-screenplay-rest</artifactId>
+			<version>${serenity.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-cucumber</artifactId>
+			<version>${serenity.version}</version>
+		</dependency>
+
+		<!-- Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+
+		<!-- ================= UI ================= -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.version}</version>
+		</dependency>
+
+		<!-- ================= API ================= -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${restassured.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>${restassured.version}</version>
+		</dependency>
+
+		<!-- ================= CUCUMBER ================= -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+
+		<!-- Using the classic Serenity+Cucumber JUnit runner; remove JUnit Platform engine to avoid test discovery conflicts -->
+
+		<!-- ================= LOGGING ================= -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<!-- ================= ASSERTIONS ================= -->
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.version}</version>
+		</dependency>
+
+		<!-- ================= LOMBOK ================= -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ================= TEST ================= -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+				<configuration>
+					<useModulePath>false</useModulePath>
+					<failIfNoTests>false</failIfNoTests>
+					<parallel>classes</parallel>
+					<threadCount>4</threadCount>
+					<forkCount>2C</forkCount>
+					<reuseForks>true</reuseForks>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*IT.java</include>
+					</includes>
+					<systemPropertyVariables>
+						<cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+						<serenity.environment>${serenity.environment}</serenity.environment>
+						<serenity.outputDirectory>${serenity.outputDirectory}</serenity.outputDirectory>
+						<junit.jupiter.execution.parallel.enabled>
+							${junit.jupiter.execution.parallel.enabled}</junit.jupiter.execution.parallel.enabled>
+						<junit.jupiter.execution.parallel.mode.default>
+							${junit.jupiter.execution.parallel.mode.default}</junit.jupiter.execution.parallel.mode.default>
+						<junit.jupiter.execution.parallel.mode.classes.default>
+							${junit.jupiter.execution.parallel.mode.classes.default}</junit.jupiter.execution.parallel.mode.classes.default>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven.failsafe.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<useModulePath>false</useModulePath>
+					<parallel>classes</parallel>
+					<threadCount>4</threadCount>
+					<forkCount>2C</forkCount>
+					<reuseForks>true</reuseForks>
+					<includes>
+						<include>**/*IT.java</include>
+						<include>**/*E2ETest.java</include>
+					</includes>
+					<systemPropertyVariables>
+						<cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+						<serenity.environment>${serenity.environment}</serenity.environment>
+						<serenity.outputDirectory>${serenity.outputDirectory}</serenity.outputDirectory>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>net.serenity-bdd.maven.plugins</groupId>
+				<artifactId>serenity-maven-plugin</artifactId>
+				<version>${serenity.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>serenity-reports</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${serenity.outputDirectory}</outputDirectory>
+					<projectKey>${project.artifactId}</projectKey>
+					<environment>${serenity.environment}</environment>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<serenity.environment>dev</serenity.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<properties>
+				<serenity.environment>qa</serenity.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<serenity.environment>prod</serenity.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>ci</id>
+			<properties>
+				<serenity.environment>ci</serenity.environment>
+				<cucumber.filter.tags>@ci</cucumber.filter.tags>
+			</properties>
+		</profile>
+	</profiles>
+</project>
