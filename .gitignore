@@ -32,6 +32,11 @@ test_output.txt
 *.iml
 .idea/
 
-# Serenity reports (generated)
+# Serenity reports and generated evidence
 /target/serenity-reports/
 /target/site/serenity/
+
+# Generated evidence folders and cache
+**/evidences/
+**/.cache/
+**/cache/

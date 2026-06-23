@@ -32,6 +32,7 @@ public class ContactsSteps {
     }
 
     @When("the user creates a new contact")
+    @When("el usuario crea un nuevo contacto")
     public void user_creates_contact() {
         ContactRequest req = ContactRequest.builder()
                 .name("Test Contact")
@@ -43,6 +44,7 @@ public class ContactsSteps {
     }
 
     @Then("the contact is created successfully")
+    @Then("el contacto se crea correctamente")
     public void contact_created() {
         Response resp = actor.recall("lastResponse");
         Assert.assertNotNull(resp);
@@ -52,12 +54,14 @@ public class ContactsSteps {
     }
 
     @When("the user retrieves the created contact")
+    @When("el usuario recupera el contacto creado")
     public void user_gets_contact() {
         String id = actor.recall("contactId");
         actor.attemptsTo(GetContactTask.withId(id));
     }
 
     @Then("the contact details are returned")
+    @Then("se retornan los detalles del contacto")
     public void contact_details_returned() {
         Response resp = actor.recall("lastResponse");
         Assert.assertNotNull(resp);
@@ -65,6 +69,7 @@ public class ContactsSteps {
     }
 
     @When("the user updates the created contact name to {string}")
+    @When("el usuario actualiza el nombre del contacto creado a {string}")
     public void user_updates_contact_name(String updatedName) {
         String id = actor.recall("contactId");
         ContactResponse created = actor.recall("contactResponse");
@@ -87,6 +92,7 @@ public class ContactsSteps {
     }
 
     @Then("the contact name should be {string}")
+    @Then("el nombre del contacto debe ser {string}")
     public void contact_name_should_be(String expectedName) {
         ContactResponse response = actor.recall("contactResponse");
         Assert.assertNotNull(response);
@@ -94,12 +100,14 @@ public class ContactsSteps {
     }
 
     @When("the user deletes the created contact")
+    @When("el usuario elimina el contacto creado")
     public void user_deletes_contact() {
         String id = actor.recall("contactId");
         actor.attemptsTo(DeleteContactTask.withId(id));
     }
 
     @Then("the contact is removed successfully")
+    @Then("el contacto se elimina correctamente")
     public void contact_removed() {
         Response resp = actor.recall("lastResponse");
         Assert.assertNotNull(resp);

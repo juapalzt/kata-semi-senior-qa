@@ -8,6 +8,9 @@ import net.serenitybdd.screenplay.rest.interactions.Post;
 import net.serenitybdd.screenplay.rest.questions.LastResponse;
 import io.restassured.response.Response;
 import org.example.framework.core.abilities.CallApiAbility;
+import org.example.framework.core.utils.ApiLogger;
+import org.example.framework.api.endpoints.ApiEndpoints;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Task to add a user via API POST /users
@@ -61,6 +64,12 @@ public class AddUserApiTask implements Task {
         Response response = LastResponse.received().answeredBy(actor);
         actor.remember("lastResponse", response);
         actor.remember("addUserResponse", response);
+        // Log request/response for debugging
+        try {
+            String scenario = System.getProperty("current.scenario.name", "add_user");
+            ApiLogger.logRequestResponse(apiBase + "/users", payload, response, scenario);
+        } catch (Exception ignored) {
+        }
     }
 
     private CallApiAbility extractCallApiAbility(Actor actor) {

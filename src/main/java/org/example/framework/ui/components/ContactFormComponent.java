@@ -2,6 +2,7 @@ package org.example.framework.ui.components;
 
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Enter;
 import org.example.framework.domain.models.ContactRequest;
@@ -12,17 +13,17 @@ public final class ContactFormComponent {
     private ContactFormComponent() {}
 
     public static Task fill(ContactRequest request) {
-        return new FillContact(request);
+        return Tasks.instrumented(FillContact.class, request);
     }
 
     public static Task submit() {
-        return new SubmitContact();
+        return Tasks.instrumented(SubmitContact.class);
     }
 
-    private static final class FillContact implements Task {
+    public static class FillContact implements Task {
         private final ContactRequest request;
 
-        private FillContact(ContactRequest request) {
+        public FillContact(ContactRequest request) {
             this.request = request;
         }
 
@@ -40,7 +41,9 @@ public final class ContactFormComponent {
         }
     }
 
-    private static final class SubmitContact implements Task {
+    public static class SubmitContact implements Task {
+        public SubmitContact() {}
+
         @Override
         public <T extends Actor> void performAs(T actor) {
             actor.attemptsTo(Click.on(AddContactLocators.SUBMIT));

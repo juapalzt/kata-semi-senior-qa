@@ -6,7 +6,7 @@ Característica: API de registro de usuarios
 
   @api @smoke
   Escenario: Registro exitoso por API
-    Dado que el servicio de registro está disponible
+    Dado el servicio de registro está disponible
     Cuando el usuario solicita registro con datos válidos
     Entonces el registro debe devolver código 200
     Y la respuesta deberá contener los datos del usuario registrado

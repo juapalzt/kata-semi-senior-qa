@@ -14,11 +14,13 @@ import org.junit.Assert;
 public class LoginSteps {
 
     @Given("el servicio de autenticación está disponible")
+    @Given("que el servicio de autenticación está disponible")
     public void el_servicio_de_autenticacion_esta_disponible() {
         // Optionally implement a health check. For now assume available.
     }
 
     @When("el usuario solicita autenticación con credenciales válidas")
+    @When("el usuario se autentica con credenciales válidas")
     public void el_usuario_solicita_autenticacion_con_credenciales_validas() {
         Actor actor = ActorManager.getMainActor();
         String user = System.getProperty("test.user", "user@example.com");

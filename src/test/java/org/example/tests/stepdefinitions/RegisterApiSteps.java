@@ -12,6 +12,7 @@ import org.junit.Assert;
 public class RegisterApiSteps {
 
     @Given("el servicio de registro está disponible")
+    @Given("que el servicio de registro está disponible")
     public void el_servicio_de_registro_esta_disponible() {
         // Optionally implement a health check. For now assume available.
     }

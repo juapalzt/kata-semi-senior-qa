@@ -6,7 +6,7 @@ Característica: API de creación de usuarios
 
   @api @smoke @adduser
   Escenario: Crear usuario con token válido
-    Dado que el servicio de autenticación está disponible
+    Dado el servicio de autenticación está disponible
     Cuando el usuario solicita autenticación con credenciales válidas
     Y crea un nuevo usuario vía API con datos válidos
     Entonces el adduser debe devolver código 200

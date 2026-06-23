@@ -11,6 +11,11 @@ import org.example.framework.core.tasks.Login;
 import org.example.framework.core.questions.HomePageQuestion;
 import net.serenitybdd.screenplay.targets.Target;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.TimeoutException;
+
+import java.time.Duration;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -92,36 +97,23 @@ public class LoginUIStepsSpanish {
      */
     @Entonces("debe visualizar un mensaje de error")
     public void debe_visualizar_un_mensaje_de_error() {
-        // Look for error message - try multiple selectors
-        boolean errorFound = false;
-        
-        // Try different XPath patterns for error messages
-        String[] errorSelectors = {
-            "//*[contains(text(), 'error') or contains(text(), 'Error')]",
-            "//div[@class='error' or @class='alert' or @class='alert-danger']",
-            "//span[@class='error' or @class='alert' or @class='alert-danger']",
-            "//*[contains(@class, 'error') or contains(@class, 'alert')]"
-        };
-        
-        for (String selector : errorSelectors) {
-            try {
-                Target errorMessage = Target.the("error message").located(By.xpath(selector));
-                if (errorMessage.resolveFor(actor).isVisible()) {
-                    errorFound = true;
-                    break;
-                }
-            } catch (Exception e) {
-                // Continue to next selector
+        var driver = BrowseTheWeb.as(actor).getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        Target errorBox = Target.the("error container").located(By.cssSelector("#error"));
+        boolean errorVisible;
+        String errorText = "";
+
+        try {
+            errorVisible = wait.until(ExpectedConditions.visibilityOf(errorBox.resolveFor(actor))) != null;
+            if (errorVisible) {
+                errorText = errorBox.resolveFor(actor).getText().trim();
             }
+        } catch (TimeoutException timeout) {
+            errorVisible = false;
         }
-        
-        // If no error element found, verify we're still on login page (alternative indicator of failure)
-        if (!errorFound) {
-            String currentUrl = BrowseTheWeb.as(actor).getDriver().getCurrentUrl();
-            errorFound = currentUrl.contains("/login");
-        }
-        
-        assertTrue("Debería haber un mensaje de error o permanecer en login", errorFound);
+
+        assertTrue("El elemento #error no apareció en 5 segundos", errorVisible);
+        System.out.println("[UI Error Validation] Mensaje capturado: " + errorText);
     }
 
     /**

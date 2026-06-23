@@ -6,7 +6,7 @@ Característica: API de autenticación
 
   @api @smoke
   Escenario: Login exitoso
-    Dado que el servicio de autenticación está disponible
+    Dado el servicio de autenticación está disponible
     Cuando el usuario solicita autenticación con credenciales válidas
     Entonces la respuesta tendrá el código 200
     Y la respuesta contendrá un token de autenticación

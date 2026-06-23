@@ -4,6 +4,8 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.Tasks;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.framework.core.utils.ApiLogger;
+import org.example.framework.api.endpoints.ApiEndpoints;
 import net.serenitybdd.screenplay.rest.interactions.Post;
 import net.serenitybdd.screenplay.rest.questions.LastResponse;
 import io.restassured.response.Response;
@@ -86,6 +88,12 @@ public class LoginApiTask implements Task {
                 } catch (Exception ignored) {
                 }
             }
+        } catch (Exception ignored) {
+        }
+        // Log request and response for debugging (writes to target/serenity-reports/evidences/...)
+        try {
+            String scenario = System.getProperty("current.scenario.name", "login");
+            ApiLogger.logRequestResponse(apiBase + ApiEndpoints.AUTH_LOGIN, payload, response, scenario);
         } catch (Exception ignored) {
         }
     }

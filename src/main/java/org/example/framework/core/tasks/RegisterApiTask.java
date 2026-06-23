@@ -9,6 +9,8 @@ import io.restassured.response.Response;
 import org.example.framework.api.endpoints.ApiEndpoints;
 import org.example.framework.domain.models.UserRequest;
 import org.example.framework.core.abilities.CallApiAbility;
+import org.example.framework.core.utils.ApiLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Task that performs a user registration call to the API and stores the response in the actor's memory.
@@ -37,6 +39,15 @@ public class RegisterApiTask implements Task {
                 .password(password)
                 .build();
 
+        String apiBase = System.getProperty("api.base.url", "https://thinking-tester-contact-list.herokuapp.com");
+        try {
+            if (actor.abilityTo(net.serenitybdd.screenplay.rest.abilities.CallAnApi.class) == null) {
+                actor.can(net.serenitybdd.screenplay.rest.abilities.CallAnApi.at(apiBase));
+            }
+        } catch (Exception ignored) {
+            actor.can(net.serenitybdd.screenplay.rest.abilities.CallAnApi.at(apiBase));
+        }
+
         CallApiAbility apiAbility = extractCallApiAbility(actor);
 
         actor.attemptsTo(Post.to(ApiEndpoints.USERS).with(request -> {
@@ -50,6 +61,12 @@ public class RegisterApiTask implements Task {
         Response response = LastResponse.received().answeredBy(actor);
         actor.remember("lastResponse", response);
         actor.remember("registerResponse", response);
+        // Log request/response for easier debugging
+        try {
+            String scenario = System.getProperty("current.scenario.name", "register");
+            ApiLogger.logRequestResponse(apiBase + ApiEndpoints.USERS, payload, response, scenario);
+        } catch (Exception ignored) {
+        }
     }
 
     /**

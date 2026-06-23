@@ -148,6 +148,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- ================= JSON PARSING ================= -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.10.1</version>
+		</dependency>
+
 		<!-- ================= TEST ================= -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -249,6 +256,32 @@
 					<projectKey>${project.artifactId}</projectKey>
 					<environment>${serenity.environment}</environment>
 				</configuration>
+			</plugin>
+
+			<!-- ========================= -->
+			<!-- Organizador de Reportes -->
+			<!-- ========================= -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>organize-serenity-evidences</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-cp</argument>
+								<classpath/>
+								<argument>org.example.tests.runners.SerenityReportOrganizer</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

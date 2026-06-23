@@ -3,11 +3,13 @@ package org.example.tests.stepdefinitions;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.actions.Open;
 import org.example.framework.core.actors.ActorManager;
 import org.example.framework.core.questions.HomePageQuestion;
 import org.example.framework.core.tasks.AddUserApiTask;
 import org.example.framework.core.tasks.Login;
+import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
 import io.restassured.response.Response;
 import org.junit.Assert;
 
@@ -32,6 +34,24 @@ public class AddUserApiSteps {
         String password = actor.recall("createdPassword");
         Assert.assertNotNull("No se encontró el email creado", email);
         Assert.assertNotNull("No se encontró la contraseña creada", password);
+
+        // For @e2e scenarios: Initialize BrowseTheWeb if not already present
+        // This allows API execution first, then UI steps later
+        try {
+            if (actor.abilityTo(BrowseTheWeb.class) == null) {
+                actor.can(BrowseTheWeb.with(ThucydidesWebDriverSupport.getDriver()));
+                try {
+                    ThucydidesWebDriverSupport.getDriver().manage().window().maximize();
+                } catch (Exception innerEx) {
+                }
+            }
+        } catch (Exception outerEx) {
+            actor.can(BrowseTheWeb.with(ThucydidesWebDriverSupport.getDriver()));
+            try {
+                ThucydidesWebDriverSupport.getDriver().manage().window().maximize();
+            } catch (Exception innerEx2) {
+            }
+        }
 
         String baseUrl = System.getProperty("ui.base.url", "https://thinking-tester-contact-list.herokuapp.com");
         actor.attemptsTo(Open.url(baseUrl + "/login"));

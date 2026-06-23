@@ -1,0 +1,42 @@
+{
+  "users": [
+    {
+      "id": "user_1",
+      "name": "Test User",
+      "lastname": "QA Developer",
+      "email": "testuser@qa.com",
+      "password": "TestPass123!"
+    },
+    {
+      "id": "user_2",
+      "name": "Admin User",
+      "lastname": "Test Admin",
+      "email": "admin@qa.com",
+      "password": "AdminPass456!"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "contact_1",
+      "name": "Carlos",
+      "lastname": "Gomez",
+      "email": "carlos@qa.com",
+      "phone": "+34123456789",
+      "city": "Madrid",
+      "country": "España"
+    },
+    {
+      "id": "contact_2",
+      "name": "Ana",
+      "lastname": "Garcia",
+      "email": "ana@qa.com",
+      "phone": "+34987654321",
+      "city": "Barcelona",
+      "country": "España"
+    }
+  ],
+  "invalidCredentials": {
+    "email": "nonexistent@qa.com",
+    "password": "WrongPassword123"
+  }
+}

@@ -36,11 +36,19 @@ public class GlobalHooks {
 
         // Determine tags to configure abilities
         Collection<String> tags = scenario.getSourceTagNames();
+        String apiBase = System.getProperty("api.base.url", "https://thinking-tester-contact-list.herokuapp.com");
 
-        // If scenario is API, give both CallAnApi and CallApiAbility (wraps CallAnApi)
-        if (tags.stream().anyMatch(t -> t.equalsIgnoreCase("@api"))) {
-            String apiBase = System.getProperty("api.base.url", "https://thinking-tester-contact-list.herokuapp.com");
-            // Attach CallAnApi and our wrapper CallApiAbility to the registered actor
+        boolean isApiOnly = tags.stream().anyMatch(t -> t.equalsIgnoreCase("@api")) &&
+                !tags.stream().anyMatch(t -> t.equalsIgnoreCase("@ui")) &&
+                !tags.stream().anyMatch(t -> t.equalsIgnoreCase("@e2e"));
+
+        boolean isUiOnly = tags.stream().anyMatch(t -> t.equalsIgnoreCase("@ui")) &&
+                !tags.stream().anyMatch(t -> t.equalsIgnoreCase("@e2e"));
+
+        boolean isE2e = tags.stream().anyMatch(t -> t.equalsIgnoreCase("@e2e"));
+
+        // For API scenarios (with or without UI/E2E), always attach API abilities
+        if (tags.stream().anyMatch(t -> t.equalsIgnoreCase("@api")) || isE2e) {
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, CallAnApi.at(apiBase));
             CallApiAbility ability = CallApiAbility.at(apiBase);
             String token = System.getProperty("auth.token");
@@ -50,14 +58,21 @@ public class GlobalHooks {
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, ability);
         }
 
-        // If scenario is UI, give BrowseTheWeb ability with the Serenity-managed driver
-        if (tags.stream().anyMatch(t -> t.equalsIgnoreCase("@ui"))) {
+        // For UI scenarios: Initialize BrowseTheWeb immediately ONLY if:
+        // - It's @ui (and not @e2e) OR
+        // - It's a combined @ui + @api (not @e2e) scenario
+        // For @e2e: Delay BrowseTheWeb initialization until after API calls
+        if (isUiOnly || (tags.stream().anyMatch(t -> t.equalsIgnoreCase("@ui")) && !isE2e)) {
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, BrowseTheWeb.with(ThucydidesWebDriverSupport.getDriver()));
+            try {
+                ThucydidesWebDriverSupport.getDriver().manage().window().maximize();
+            } catch (Exception ignored) {
+            }
         }
+        // For @e2e: do NOT initialize BrowseTheWeb yet; it will be added when UI steps begin
 
-        // Default behavior: if no explicit tag, attach both abilities as a safe default
-        if (!tags.stream().anyMatch(t -> t.equalsIgnoreCase("@api") || t.equalsIgnoreCase("@ui"))) {
-            String apiBase = System.getProperty("api.base.url", "https://thinking-tester-contact-list.herokuapp.com");
+        // Default behavior: if no explicit tags at all
+        if (!tags.stream().anyMatch(t -> t.equalsIgnoreCase("@api") || t.equalsIgnoreCase("@ui") || t.equalsIgnoreCase("@e2e"))) {
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, CallAnApi.at(apiBase));
             CallApiAbility ability = CallApiAbility.at(apiBase);
             String token = System.getProperty("auth.token");
@@ -66,6 +81,19 @@ public class GlobalHooks {
             }
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, ability);
             ActorManager.giveAbilityTo(DEFAULT_ACTOR_NAME, BrowseTheWeb.with(ThucydidesWebDriverSupport.getDriver()));
+            try {
+                ThucydidesWebDriverSupport.getDriver().manage().window().maximize();
+            } catch (Exception ignored) {
+            }
+        }
+
+        // Store scenario type for reference in steps
+        if (isApiOnly) {
+            System.setProperty("scenario.type", "API_ONLY");
+        } else if (isUiOnly) {
+            System.setProperty("scenario.type", "UI_ONLY");
+        } else if (isE2e) {
+            System.setProperty("scenario.type", "E2E");
         }
     }
 
@@ -81,10 +109,13 @@ public class GlobalHooks {
 
     @After
     public void afterScenario(Scenario scenario) {
-        // Clean up WebDriver and actor state
-        try {
-            ThucydidesWebDriverSupport.closeDriver();
-        } catch (Exception ignored) {
+        // Close WebDriver only if scenario used UI (@ui or @e2e that opened the browser)
+        String scenarioType = System.getProperty("scenario.type", "UNKNOWN");
+        if (!scenarioType.equals("API_ONLY")) {
+            try {
+                ThucydidesWebDriverSupport.closeDriver();
+            } catch (Exception ignored) {
+            }
         }
 
         try {
